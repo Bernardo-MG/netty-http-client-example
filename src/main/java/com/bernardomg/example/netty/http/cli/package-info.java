@@ -25,4 +25,4 @@
  * CLI.
  */
 
-package com.bernardomg.example.netty.tcp.cli;
+package com.bernardomg.example.netty.http.cli;

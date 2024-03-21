@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.bernardomg.example.netty.tcp.client;
+package com.bernardomg.example.netty.http.client;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -45,7 +45,7 @@ import reactor.netty.tcp.TcpClient;
  *
  */
 @Slf4j
-public final class ReactorNettyTcpClient implements Client {
+public final class ReactorNettyHttpClient implements Client {
 
     /**
      * Main connection. For sending messages and reacting to responses.
@@ -79,7 +79,7 @@ public final class ReactorNettyTcpClient implements Client {
     @NonNull
     private Boolean                                                        wiretap = false;
 
-    public ReactorNettyTcpClient(final String hst, final Integer prt, final TransactionListener lst) {
+    public ReactorNettyHttpClient(final String hst, final Integer prt, final TransactionListener lst) {
         super();
 
         port = Objects.requireNonNull(prt);

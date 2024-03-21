@@ -22,40 +22,31 @@
  * SOFTWARE.
  */
 
-package com.bernardomg.example.netty.tcp.client;
+package com.bernardomg.example.netty.http.cli;
+
+import com.bernardomg.example.netty.http.cli.command.SendEmptyMessageCommand;
+import com.bernardomg.example.netty.http.cli.command.SendMessageCommand;
+import com.bernardomg.example.netty.http.cli.command.SendMultipleMessagesCommand;
+import com.bernardomg.example.netty.http.cli.version.ManifestVersionProvider;
+
+import picocli.CommandLine.Command;
 
 /**
- * Transaction listener. Allows reacting to the events of a message transaction.
+ * TCP client menu.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-public interface TransactionListener {
+@Command(description = "TCP client",
+        subcommands = { SendMessageCommand.class, SendEmptyMessageCommand.class, SendMultipleMessagesCommand.class },
+        mixinStandardHelpOptions = true, versionProvider = ManifestVersionProvider.class)
+public class TcpClientMenu {
 
     /**
-     * Reacts to a message being received.
-     *
-     * @param message
-     *            message received
+     * Default constructor.
      */
-    public void onReceive(final String message);
-
-    /**
-     * Reacts to a message being sent.
-     *
-     * @param message
-     *            message sent
-     */
-    public void onSend(final String message);
-
-    /**
-     * Reacts to the start event.
-     */
-    public void onStart();
-
-    /**
-     * Reacts to the stop event.
-     */
-    public void onStop();
+    public TcpClientMenu() {
+        super();
+    }
 
 }

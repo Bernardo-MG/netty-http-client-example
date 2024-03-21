@@ -25,4 +25,4 @@
  * Client classes.
  */
 
-package com.bernardomg.example.netty.tcp.client;
+package com.bernardomg.example.netty.http.client;

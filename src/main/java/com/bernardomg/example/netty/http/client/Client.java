@@ -21,8 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * CLI commands for showing the version.
- */
 
-package com.bernardomg.example.netty.tcp.cli.version;
+package com.bernardomg.example.netty.http.client;
+
+/**
+ * Generic client. Can start a connection, close said connection and send messages.
+ *
+ * @author Bernardo Mart&iacute;nez Garrido
+ *
+ */
+public interface Client {
+
+    /**
+     * Closes the current connection.
+     */
+    public void close();
+
+    /**
+     * Starts a connection.
+     */
+    public void connect();
+
+    /**
+     * Sends an empty request.
+     */
+    public void request();
+
+    /**
+     * Sends the message through the connection.
+     *
+     * @param message
+     *            message to send
+     */
+    public void request(final String message);
+
+}

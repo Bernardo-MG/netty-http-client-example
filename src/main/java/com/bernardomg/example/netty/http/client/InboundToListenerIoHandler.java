@@ -22,37 +22,43 @@
  * SOFTWARE.
  */
 
-package com.bernardomg.example.netty.tcp.client;
+package com.bernardomg.example.netty.http.client;
+
+import java.util.Objects;
+import java.util.function.BiFunction;
+
+import org.reactivestreams.Publisher;
+
+import reactor.netty.NettyInbound;
+import reactor.netty.NettyOutbound;
 
 /**
- * Generic client. Can start a connection, close said connection and send messages.
+ * I/O handler which sends any received message to the listener.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-public interface Client {
+public final class InboundToListenerIoHandler implements BiFunction<NettyInbound, NettyOutbound, Publisher<Void>> {
 
     /**
-     * Closes the current connection.
+     * Transaction listener. Reacts to events during the request.
      */
-    public void close();
+    private final TransactionListener listener;
 
-    /**
-     * Starts a connection.
-     */
-    public void connect();
+    public InboundToListenerIoHandler(final TransactionListener lst) {
+        super();
 
-    /**
-     * Sends an empty request.
-     */
-    public void request();
+        listener = Objects.requireNonNull(lst);
+    }
 
-    /**
-     * Sends the message through the connection.
-     *
-     * @param message
-     *            message to send
-     */
-    public void request(final String message);
+    @Override
+    public Publisher<Void> apply(final NettyInbound request, final NettyOutbound response) {
+        // Receives the response
+        return request.receive()
+            .asString()
+            // Sends request to listener
+            .doOnNext(listener::onReceive)
+            .then();
+    }
 
 }

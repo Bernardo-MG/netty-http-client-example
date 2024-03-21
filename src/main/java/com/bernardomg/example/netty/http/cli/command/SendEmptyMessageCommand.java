@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.bernardomg.example.netty.tcp.cli.command;
+package com.bernardomg.example.netty.http.cli.command;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -32,10 +32,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import com.bernardomg.example.netty.tcp.cli.CliWriterTransactionListener;
-import com.bernardomg.example.netty.tcp.cli.version.ManifestVersionProvider;
-import com.bernardomg.example.netty.tcp.client.ReactorNettyTcpClient;
-import com.bernardomg.example.netty.tcp.client.TransactionListener;
+import com.bernardomg.example.netty.http.cli.CliWriterTransactionListener;
+import com.bernardomg.example.netty.http.cli.version.ManifestVersionProvider;
+import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
+import com.bernardomg.example.netty.http.client.TransactionListener;
 
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
@@ -104,7 +104,7 @@ public final class SendEmptyMessageCommand implements Runnable {
     @Override
     public final void run() {
         final PrintWriter           writer;
-        final ReactorNettyTcpClient client;
+        final ReactorNettyHttpClient client;
         final TransactionListener   listener;
 
         if (debug) {
@@ -122,7 +122,7 @@ public final class SendEmptyMessageCommand implements Runnable {
 
         // Create client
         listener = new CliWriterTransactionListener(host, port, writer);
-        client = new ReactorNettyTcpClient(host, port, listener);
+        client = new ReactorNettyHttpClient(host, port, listener);
         client.setWiretap(debug);
 
         client.connect();

@@ -21,8 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * CLI commands.
- */
 
-package com.bernardomg.example.netty.tcp.cli.command;
+package com.bernardomg.example.netty.http.cli.version;
+
+import com.bernardomg.cli.picocli.version.AbstractManifestVersionProvider;
+
+/**
+ * Version provider based on the JAR manifest.
+ *
+ * @author Bernardo Mart&iacute;nez Garrido
+ *
+ */
+public final class ManifestVersionProvider extends AbstractManifestVersionProvider {
+
+    /**
+     * Default constructor.
+     */
+    public ManifestVersionProvider() {
+        super("Netty TCP Client Example");
+    }
+
+}

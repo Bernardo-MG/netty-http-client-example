@@ -22,43 +22,28 @@
  * SOFTWARE.
  */
 
-package com.bernardomg.example.netty.tcp.client;
+package com.bernardomg.example.netty.http;
 
-import java.util.Objects;
-import java.util.function.BiFunction;
+import com.bernardomg.example.netty.http.cli.TcpClientMenu;
 
-import org.reactivestreams.Publisher;
+import lombok.extern.slf4j.Slf4j;
+import picocli.CommandLine;
 
-import reactor.netty.NettyInbound;
-import reactor.netty.NettyOutbound;
+@Slf4j
+public class Main {
 
-/**
- * I/O handler which sends any received message to the listener.
- *
- * @author Bernardo Mart&iacute;nez Garrido
- *
- */
-public final class InboundToListenerIoHandler implements BiFunction<NettyInbound, NettyOutbound, Publisher<Void>> {
+    public static void main(final String[] args) {
+        final Integer exitCode;
 
-    /**
-     * Transaction listener. Reacts to events during the request.
-     */
-    private final TransactionListener listener;
+        exitCode = new CommandLine(new TcpClientMenu()).execute(args);
 
-    public InboundToListenerIoHandler(final TransactionListener lst) {
-        super();
+        log.debug("Exited with code {}", exitCode);
 
-        listener = Objects.requireNonNull(lst);
+        System.exit(exitCode);
     }
 
-    @Override
-    public Publisher<Void> apply(final NettyInbound request, final NettyOutbound response) {
-        // Receives the response
-        return request.receive()
-            .asString()
-            // Sends request to listener
-            .doOnNext(listener::onReceive)
-            .then();
+    public Main() {
+        super();
     }
 
 }
