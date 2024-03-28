@@ -1,6 +1,6 @@
-# Reactor Netty TCP Client Example
+# Reactor Netty HTTP Client Example
 
-A small Netty TCP client to serve as an example.
+A small Netty HTTP client to serve as an example.
 
 To use the project first package it:
 
@@ -11,7 +11,7 @@ mvn clean package
 The JAR will be a runnable Java file. It can be executed like this:
 
 ```
-java -jar target/client.jar message localhost 8080 Hello
+java -jar target/client.jar post localhost 8080 Hello
 ```
 
 To show other commands:
