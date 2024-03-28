@@ -45,12 +45,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 /**
- * Send multiple messages command. Will send multiple messages to the server through HTTP.
+ * Send multiple POST messages command. Will send multiple messages to the server through HTTP.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-@Command(name = "multiple", description = "Sends multiple HTTP messages", mixinStandardHelpOptions = true,
+@Command(name = "postMultiple", description = "Sends multiple HTTP messages", mixinStandardHelpOptions = true,
         versionProvider = ManifestVersionProvider.class)
 @Slf4j
 public final class PostMultipleMessagesCommand implements Runnable {

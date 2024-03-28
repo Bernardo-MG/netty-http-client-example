@@ -45,12 +45,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 /**
- * Send message command. Will send a message to the server through HTTP.
+ * Send POST command. Will send a message to the server through HTTP.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-@Command(name = "message", description = "Sends a POST HTTP message", mixinStandardHelpOptions = true,
+@Command(name = "post", description = "Sends a POST HTTP message", mixinStandardHelpOptions = true,
         versionProvider = ManifestVersionProvider.class)
 @Slf4j
 public final class PostMessageCommand implements Runnable {

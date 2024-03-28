@@ -50,7 +50,7 @@ import picocli.CommandLine.Spec;
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-@Command(name = "empty", description = "Sends a POST with an empty HTTP message", mixinStandardHelpOptions = true,
+@Command(name = "postEmpty", description = "Sends a POST with an empty HTTP message", mixinStandardHelpOptions = true,
         versionProvider = ManifestVersionProvider.class)
 @Slf4j
 public final class PostEmptyMessageCommand implements Runnable {

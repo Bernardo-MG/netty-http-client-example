@@ -8,26 +8,26 @@ This includes details on all the messages sent or received.
 
 ### Single Message
 
-To send the message 'Hello' to localhost:8080:
+To post the message 'Hello' to localhost:8080:
 
 ```
-java -jar target/client.jar message --host=localhost --port=8080 --message=Hello
+java -jar target/client.jar post --host=localhost --port=8080 --message=Hello
 ```
 
 ### Empty Message
 
-To send an empty TCP request to localhost:8080:
+To post an empty request to localhost:8080:
 
 ```
-java -jar target/client.jar empty --host=localhost --port=8080
+java -jar target/client.jar postEmpty --host=localhost --port=8080
 ```
 
 ### Multiple Messages
 
-To send several consecutive messages to localhost:8080:
+To post several consecutive messages to localhost:8080:
 
 ```
-java -jar target/client.jar multiple --host=localhost --port=8080
+java -jar target/client.jar postMultiple --host=localhost --port=8080
 ```
 
 ## Help
