@@ -38,7 +38,7 @@ import reactor.netty.http.client.HttpClientResponse;
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-public final class InboundToListenerIoHandler
+public final class ResponseToListenerHandler
         implements BiFunction<HttpClientResponse, ByteBufFlux, Publisher<String>> {
 
     /**
@@ -46,7 +46,7 @@ public final class InboundToListenerIoHandler
      */
     private final TransactionListener listener;
 
-    public InboundToListenerIoHandler(final TransactionListener lst) {
+    public ResponseToListenerHandler(final TransactionListener lst) {
         super();
 
         listener = Objects.requireNonNull(lst);
@@ -54,9 +54,9 @@ public final class InboundToListenerIoHandler
 
     @Override
     public final Publisher<String> apply(final HttpClientResponse response, final ByteBufFlux body) {
-        // Receives the response
-        listener.onReceive(response.toString());
-        return body.asString();
+        return body.asString()
+                // Sends response to listener
+                .doOnNext(listener::onReceive);
     }
 
 }

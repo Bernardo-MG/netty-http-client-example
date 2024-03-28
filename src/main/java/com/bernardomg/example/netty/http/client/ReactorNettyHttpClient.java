@@ -86,7 +86,7 @@ public final class ReactorNettyHttpClient implements Client {
         host = Objects.requireNonNull(hst);
         listener = Objects.requireNonNull(lst);
 
-        handler = new InboundToListenerIoHandler(listener);
+        handler = new ResponseToListenerHandler(listener);
     }
 
     @Override
