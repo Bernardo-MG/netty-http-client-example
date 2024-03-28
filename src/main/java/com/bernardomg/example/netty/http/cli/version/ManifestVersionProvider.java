@@ -38,7 +38,7 @@ public final class ManifestVersionProvider extends AbstractManifestVersionProvid
      * Default constructor.
      */
     public ManifestVersionProvider() {
-        super("Netty TCP Client Example");
+        super("Netty HTTP Client Example");
     }
 
 }

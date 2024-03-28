@@ -24,7 +24,7 @@
 
 package com.bernardomg.example.netty.http;
 
-import com.bernardomg.example.netty.http.cli.TcpClientMenu;
+import com.bernardomg.example.netty.http.cli.HttpClientMenu;
 
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine;
@@ -35,7 +35,7 @@ public class Main {
     public static void main(final String[] args) {
         final Integer exitCode;
 
-        exitCode = new CommandLine(new TcpClientMenu()).execute(args);
+        exitCode = new CommandLine(new HttpClientMenu()).execute(args);
 
         log.debug("Exited with code {}", exitCode);
 

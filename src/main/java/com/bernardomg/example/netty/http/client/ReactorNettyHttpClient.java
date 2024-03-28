@@ -29,17 +29,17 @@ import java.util.function.BiFunction;
 
 import org.reactivestreams.Publisher;
 
+import io.netty.buffer.ByteBuf;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-import reactor.netty.Connection;
-import reactor.netty.NettyInbound;
-import reactor.netty.NettyOutbound;
-import reactor.netty.tcp.TcpClient;
+import reactor.netty.ByteBufFlux;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.client.HttpClientResponse;
 
 /**
- * Reactor Netty based TCP client.
+ * Reactor Netty based HTTP client.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
@@ -48,36 +48,36 @@ import reactor.netty.tcp.TcpClient;
 public final class ReactorNettyHttpClient implements Client {
 
     /**
-     * Main connection. For sending messages and reacting to responses.
-     */
-    private Connection                                                     connection;
-
-    /**
      * IO handler for the client.
      */
-    private final BiFunction<NettyInbound, NettyOutbound, Publisher<Void>> handler;
+    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> handler;
 
     /**
      * Host for the server to which this client will connect.
      */
-    private final String                                                   host;
+    private final String                                                                                   host;
+
+    /**
+     * Main client. For sending messages and reacting to responses.
+     */
+    private HttpClient                                                                                     httpClient;
 
     /**
      * Transaction listener. Reacts to events during the request.
      */
-    private final TransactionListener                                      listener;
+    private final TransactionListener                                                                      listener;
 
     /**
      * Port for the server to which this client will connect.
      */
-    private final Integer                                                  port;
+    private final Integer                                                                                  port;
 
     /**
      * Wiretap flag.
      */
     @Setter
     @NonNull
-    private Boolean                                                        wiretap = false;
+    private Boolean                                                                                        wiretap = false;
 
     public ReactorNettyHttpClient(final String hst, final Integer prt, final TransactionListener lst) {
         super();
@@ -90,17 +90,6 @@ public final class ReactorNettyHttpClient implements Client {
     }
 
     @Override
-    public final void close() {
-        log.trace("Stopping client");
-
-        listener.onStop();
-
-        connection.dispose();
-
-        log.trace("Stopped client");
-    }
-
-    @Override
     public final void connect() {
         log.trace("Starting client");
 
@@ -108,58 +97,31 @@ public final class ReactorNettyHttpClient implements Client {
 
         listener.onStart();
 
-        connection = TcpClient.create()
+        httpClient = HttpClient.create()
             // Wiretap
             .wiretap(wiretap)
             // Sets connection
             .host(host)
-            .port(port)
-            // Adds handler
-            .handle(handler)
-            // Connect
-            .connectNow();
+            .port(port);
 
         log.trace("Started client");
     }
 
     @Override
-    public final void request() {
-        final Publisher<String> dataStream;
-
-        log.debug("Sending empty message");
-
-        // Request data
-        dataStream = buildStream("");
-
-        // Sends request
-        connection.outbound()
-            .sendString(dataStream)
-            .then()
-            // Subscribe to run
-            .subscribe();
-    }
-
-    @Override
-    public final void request(final String message) {
-        final Publisher<String> dataStream;
+    public final void post(final String message) {
+        final Publisher<? extends ByteBuf> body;
 
         log.debug("Sending {}", message);
 
         // Request data
-        dataStream = buildStream(message);
+        body = ByteBufFlux.fromString(Mono.just(message));
 
         // Sends request
-        connection.outbound()
-            .sendString(dataStream)
-            .then()
+        httpClient.post()
+            .send(body)
+            .response(handler)
             // Subscribe to run
             .subscribe();
-    }
-
-    private final Publisher<String> buildStream(final String message) {
-        return Mono.just(message)
-            .flux()
-            .doOnNext(listener::onSend);
     }
 
 }

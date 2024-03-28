@@ -45,15 +45,15 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 /**
- * Send multiple messages command. Will send multiple messages to the server through TCP.
+ * Send message command. Will send a message to the server through HTTP.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-@Command(name = "multiple", description = "Sends multiple TCP messages", mixinStandardHelpOptions = true,
+@Command(name = "message", description = "Sends a POST HTTP message", mixinStandardHelpOptions = true,
         versionProvider = ManifestVersionProvider.class)
 @Slf4j
-public final class SendMultipleMessagesCommand implements Runnable {
+public final class PostMessageCommand implements Runnable {
 
     /**
      * Debug flag. Shows debug logs.
@@ -66,6 +66,12 @@ public final class SendMultipleMessagesCommand implements Runnable {
      */
     @Option(names = { "-h", "--host" }, paramLabel = "URL", description = "Server host.", required = true)
     private String      host;
+
+    /**
+     * Message to send.
+     */
+    @Option(names = { "-m", "--message" }, paramLabel = "text", description = "Message to send.", required = true)
+    private String      message;
 
     /**
      * Server port.
@@ -97,15 +103,15 @@ public final class SendMultipleMessagesCommand implements Runnable {
     /**
      * Default constructor.
      */
-    public SendMultipleMessagesCommand() {
+    public PostMessageCommand() {
         super();
     }
 
     @Override
     public final void run() {
-        final PrintWriter           writer;
+        final PrintWriter            writer;
         final ReactorNettyHttpClient client;
-        final TransactionListener   listener;
+        final TransactionListener    listener;
 
         if (debug) {
             activateDebugLog();
@@ -127,12 +133,8 @@ public final class SendMultipleMessagesCommand implements Runnable {
 
         client.connect();
 
-        // Send messages
-        client.request("Message 1");
-        for (Integer i = 2; i <= 5; i++) {
-            waitOneSec();
-            client.request(String.format("Message %d", i));
-        }
+        // Send message
+        client.post(message);
 
         // Give time to the server for responses
         log.debug("Waiting {} seconds for responses", wait);
@@ -147,9 +149,6 @@ public final class SendMultipleMessagesCommand implements Runnable {
         writer.println("finished waiting");
         log.debug("Finished waiting for responses");
 
-        // Close client
-        client.close();
-
         // Close writer
         writer.close();
     }
@@ -160,18 +159,6 @@ public final class SendMultipleMessagesCommand implements Runnable {
     private final void activateDebugLog() {
         Configurator.setLevel("com.bernardomg.example", Level.DEBUG);
         Configurator.setLevel("reactor.netty.http", Level.DEBUG);
-    }
-
-    /**
-     * Wait for one second.
-     */
-    private final void waitOneSec() {
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (final InterruptedException e) {
-            log.error(e.getLocalizedMessage(), e);
-            throw new RuntimeException(e);
-        }
     }
 
 }

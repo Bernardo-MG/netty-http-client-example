@@ -29,8 +29,8 @@ import java.util.function.BiFunction;
 
 import org.reactivestreams.Publisher;
 
-import reactor.netty.NettyInbound;
-import reactor.netty.NettyOutbound;
+import reactor.netty.ByteBufFlux;
+import reactor.netty.http.client.HttpClientResponse;
 
 /**
  * I/O handler which sends any received message to the listener.
@@ -38,7 +38,8 @@ import reactor.netty.NettyOutbound;
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-public final class InboundToListenerIoHandler implements BiFunction<NettyInbound, NettyOutbound, Publisher<Void>> {
+public final class InboundToListenerIoHandler
+        implements BiFunction<HttpClientResponse, ByteBufFlux, Publisher<String>> {
 
     /**
      * Transaction listener. Reacts to events during the request.
@@ -52,13 +53,10 @@ public final class InboundToListenerIoHandler implements BiFunction<NettyInbound
     }
 
     @Override
-    public Publisher<Void> apply(final NettyInbound request, final NettyOutbound response) {
+    public final Publisher<String> apply(final HttpClientResponse response, final ByteBufFlux body) {
         // Receives the response
-        return request.receive()
-            .asString()
-            // Sends request to listener
-            .doOnNext(listener::onReceive)
-            .then();
+        listener.onReceive(response.toString());
+        return body.asString();
     }
 
 }

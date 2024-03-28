@@ -24,28 +24,28 @@
 
 package com.bernardomg.example.netty.http.cli;
 
-import com.bernardomg.example.netty.http.cli.command.SendEmptyMessageCommand;
-import com.bernardomg.example.netty.http.cli.command.SendMessageCommand;
-import com.bernardomg.example.netty.http.cli.command.SendMultipleMessagesCommand;
+import com.bernardomg.example.netty.http.cli.command.PostEmptyMessageCommand;
+import com.bernardomg.example.netty.http.cli.command.PostMessageCommand;
+import com.bernardomg.example.netty.http.cli.command.PostMultipleMessagesCommand;
 import com.bernardomg.example.netty.http.cli.version.ManifestVersionProvider;
 
 import picocli.CommandLine.Command;
 
 /**
- * TCP client menu.
+ * HTTP client menu.
  *
  * @author Bernardo Mart&iacute;nez Garrido
  *
  */
-@Command(description = "TCP client",
-        subcommands = { SendMessageCommand.class, SendEmptyMessageCommand.class, SendMultipleMessagesCommand.class },
+@Command(description = "HTTP client",
+        subcommands = { PostMessageCommand.class, PostEmptyMessageCommand.class, PostMultipleMessagesCommand.class },
         mixinStandardHelpOptions = true, versionProvider = ManifestVersionProvider.class)
-public class TcpClientMenu {
+public class HttpClientMenu {
 
     /**
      * Default constructor.
      */
-    public TcpClientMenu() {
+    public HttpClientMenu() {
         super();
     }
 

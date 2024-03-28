@@ -33,26 +33,16 @@ package com.bernardomg.example.netty.http.client;
 public interface Client {
 
     /**
-     * Closes the current connection.
-     */
-    public void close();
-
-    /**
      * Starts a connection.
      */
     public void connect();
 
     /**
-     * Sends an empty request.
-     */
-    public void request();
-
-    /**
-     * Sends the message through the connection.
+     * Sends a POST request.
      *
      * @param message
      *            message to send
      */
-    public void request(final String message);
+    public void post(final String message);
 
 }
