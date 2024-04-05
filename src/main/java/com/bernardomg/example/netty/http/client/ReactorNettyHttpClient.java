@@ -35,7 +35,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
+import reactor.netty.NettyOutbound;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.netty.http.client.HttpClientResponse;
 
 /**
@@ -48,9 +50,9 @@ import reactor.netty.http.client.HttpClientResponse;
 public final class ReactorNettyHttpClient implements Client {
 
     /**
-     * IO handler for the client.
+     * IO response handler for the client.
      */
-    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> handler;
+    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> responseHandler;
 
     /**
      * Host for the server to which this client will connect.
@@ -86,7 +88,7 @@ public final class ReactorNettyHttpClient implements Client {
         host = Objects.requireNonNull(hst);
         listener = Objects.requireNonNull(lst);
 
-        handler = new ResponseToListenerHandler(listener);
+        responseHandler = new ResponseToListenerHandler(listener);
     }
 
     @Override
@@ -109,9 +111,10 @@ public final class ReactorNettyHttpClient implements Client {
 
     @Override
     public final void post(final String message) {
+        final BiFunction<? super HttpClientRequest, ? super NettyOutbound, ? extends Publisher<Void>> requestHandler;
         final Publisher<? extends ByteBuf> body;
 
-        log.debug("Sending {}", message);
+        log.debug("Posting {}", message);
 
         // Request data
         body = ByteBufFlux.fromString(Mono.just(message));
@@ -119,9 +122,11 @@ public final class ReactorNettyHttpClient implements Client {
         // Sends request
         httpClient.post()
             .send(body)
-            .response(handler)
+//            .send(requestHandler)
+            .response().block();
+//            .response(responseHandler)
             // Subscribe to run
-            .subscribe();
+//            .subscribe();
     }
 
 }

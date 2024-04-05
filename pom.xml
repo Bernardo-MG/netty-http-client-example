@@ -272,6 +272,7 @@
          </exclusions>
       </dependency>
       <dependency>
+		 <!-- Wiremock -->
          <groupId>org.wiremock</groupId>
          <artifactId>wiremock</artifactId>
          <version>${wiremock.version}</version>
