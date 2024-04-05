@@ -124,6 +124,7 @@
       <picocli.version>4.7.5</picocli.version>
       <reactor.version>2023.0.4</reactor.version>
       <slf4j.version>2.0.12</slf4j.version>
+      <wiremock.version>3.5.2</wiremock.version>
       <!-- ============================================== -->
       <!-- ============== PLUGINS VERSIONS ============== -->
       <!-- ============================================== -->
@@ -269,6 +270,12 @@
                <artifactId>junit</artifactId>
             </exclusion>
          </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.wiremock</groupId>
+         <artifactId>wiremock</artifactId>
+         <version>${wiremock.version}</version>
+         <scope>test</scope>
       </dependency>
    </dependencies>
 

@@ -26,16 +26,40 @@ package com.bernardomg.example.netty.http.test.integration;
 
 import org.junit.jupiter.api.Test;
 
-public final class ITEmpty {
+import com.bernardomg.example.netty.http.client.Client;
+import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
+import com.bernardomg.example.netty.http.client.TransactionListener;
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-    /**
-     * Default constructor.
-     */
-    public ITEmpty() {
-        super();
-    }
+@WireMockTest
+public final class ITReactorNettyHttpClientPost {
 
     @Test
-    public final void empty() {}
+    public final void post(final WireMockRuntimeInfo wmRuntimeInfo) {
+        final Client client;
+
+        client = getClient("http://localhost", wmRuntimeInfo.getHttpPort());
+
+        client.connect();
+        client.post("abc");
+    }
+
+    private final Client getClient(final String url, final int port) {
+        return new ReactorNettyHttpClient(url, port, new TransactionListener() {
+
+            @Override
+            public void onReceive(final String message) {}
+
+            @Override
+            public void onSend(final String message) {}
+
+            @Override
+            public void onStart() {}
+
+            @Override
+            public void onStop() {}
+        });
+    }
 
 }
