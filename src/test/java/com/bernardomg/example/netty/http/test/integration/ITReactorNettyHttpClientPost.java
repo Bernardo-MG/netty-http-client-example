@@ -24,12 +24,12 @@
 
 package com.bernardomg.example.netty.http.test.integration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import java.io.PrintWriter;
@@ -42,32 +42,41 @@ import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-@WireMockTest(httpPort = 8595)
+@WireMockTest
 @DisplayName("ReactorNettyHttpClient")
 public final class ITReactorNettyHttpClientPost {
+
+    private static final String LOCALHOST = "localhost";
+
+    private static final String ROUTE     = "/";
 
     @Test
     @DisplayName("Verify a post request is sent correctly")
     public final void testPost(final WireMockRuntimeInfo wmRuntimeInfo) {
         final ReactorNettyHttpClient client;
+        final String                 body;
 
-        stubFor(post(anyUrl())
+        // GIVEN
+        body = "abc";
+
+        stubFor(post(urlEqualTo(ROUTE))
             // .withHost(equalTo("http://localhost"))
             .willReturn(ok("ack")));
 
-        client = getClient("localhost", 8595);
+        client = getClient(wmRuntimeInfo.getHttpPort());
 
-        client.setWiretap(true);
         client.connect();
 
-        client.post("abc");
+        // WHEN
+        client.post(body);
 
-        verify(postRequestedFor(anyUrl()).withRequestBody(containing("abc")));
+        // THEN
+        verify(postRequestedFor(urlEqualTo(ROUTE)).withRequestBody(containing(body)));
     }
 
-    private final ReactorNettyHttpClient getClient(final String url, final int port) {
-        return new ReactorNettyHttpClient(url, port,
-            new TransactionPrinterListener(url, port, new PrintWriter(System.out)));
+    private final ReactorNettyHttpClient getClient(final int port) {
+        return new ReactorNettyHttpClient(LOCALHOST, port,
+            new TransactionPrinterListener(LOCALHOST, port, new PrintWriter(System.out)));
     }
 
 }
