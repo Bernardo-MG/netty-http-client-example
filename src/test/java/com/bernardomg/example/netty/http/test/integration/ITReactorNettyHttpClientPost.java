@@ -25,6 +25,7 @@
 package com.bernardomg.example.netty.http.test.integration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -59,8 +60,7 @@ public final class ITReactorNettyHttpClientPost {
         // GIVEN
         body = "abc";
 
-        stubFor(post(urlEqualTo(ROUTE))
-            // .withHost(equalTo("http://localhost"))
+        stubFor(post(urlEqualTo(ROUTE)).withHost(equalTo(LOCALHOST))
             .willReturn(ok("ack")));
 
         client = getClient(wmRuntimeInfo.getHttpPort());
@@ -72,7 +72,7 @@ public final class ITReactorNettyHttpClientPost {
         // TODO: change for something better
         try {
             Thread.sleep(2000);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
