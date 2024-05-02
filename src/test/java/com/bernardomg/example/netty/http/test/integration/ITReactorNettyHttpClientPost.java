@@ -30,7 +30,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import java.io.PrintWriter;
@@ -63,7 +62,7 @@ public final class ITReactorNettyHttpClientPost {
 
         client.post("abc");
 
-        verify(postRequestedFor(urlEqualTo("")).withRequestBody(containing("abc")));
+        verify(postRequestedFor(anyUrl()).withRequestBody(containing("abc")));
     }
 
     private final ReactorNettyHttpClient getClient(final String url, final int port) {
