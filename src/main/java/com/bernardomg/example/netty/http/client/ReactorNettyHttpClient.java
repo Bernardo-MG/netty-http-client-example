@@ -48,11 +48,6 @@ import reactor.netty.http.client.HttpClientResponse;
 public final class ReactorNettyHttpClient implements Client {
 
     /**
-     * IO handler for the client.
-     */
-    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> handler;
-
-    /**
      * Host for the server to which this client will connect.
      */
     private final String                                                                                   host;
@@ -73,6 +68,11 @@ public final class ReactorNettyHttpClient implements Client {
     private final Integer                                                                                  port;
 
     /**
+     * IO response handler for the client.
+     */
+    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> responseHandler;
+
+    /**
      * Wiretap flag.
      */
     @Setter
@@ -86,7 +86,7 @@ public final class ReactorNettyHttpClient implements Client {
         host = Objects.requireNonNull(hst);
         listener = Objects.requireNonNull(lst);
 
-        handler = new ResponseToListenerHandler(listener);
+        responseHandler = new ResponseToListenerHandler(listener);
     }
 
     @Override
@@ -119,7 +119,7 @@ public final class ReactorNettyHttpClient implements Client {
         // Sends request
         httpClient.post()
             .send(body)
-            .response(handler)
+            .response(responseHandler)
             // Subscribe to run
             .subscribe();
     }
