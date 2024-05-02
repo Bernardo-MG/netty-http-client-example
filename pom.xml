@@ -117,6 +117,7 @@
       <!-- ============================================== -->
       <!-- =========== DEPENDENCIES VERSIONS ============ -->
       <!-- ============================================== -->
+      <awaitility.version>4.2.1</awaitility.version>
       <bernardomg.cli.manifestVersion>1.0.0</bernardomg.cli.manifestVersion>
       <junit.jupiter.version>5.10.2</junit.jupiter.version>
       <log4j.version>2.23.1</log4j.version>
@@ -276,6 +277,13 @@
          <groupId>org.wiremock</groupId>
          <artifactId>wiremock</artifactId>
          <version>${wiremock.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+		  <!-- Awaitility -->
+         <groupId>org.awaitility</groupId>
+         <artifactId>awaitility</artifactId>
+         <version>${awaitility.version}</version>
          <scope>test</scope>
       </dependency>
    </dependencies>

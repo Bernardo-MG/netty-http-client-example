@@ -33,13 +33,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
-import java.io.PrintWriter;
-
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.bernardomg.example.netty.http.cli.TransactionPrinterListener;
 import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
+import com.bernardomg.example.netty.http.test.util.TransactionStatusListener;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
@@ -47,9 +46,11 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 @DisplayName("ReactorNettyHttpClient")
 public final class ITReactorNettyHttpClientPost {
 
-    private static final String LOCALHOST = "localhost";
+    private static final String             LOCALHOST = "localhost";
 
-    private static final String ROUTE     = "/";
+    private static final String             ROUTE     = "/";
+
+    private final TransactionStatusListener listener  = new TransactionStatusListener();
 
     @Test
     @DisplayName("Verify a post request is sent correctly")
@@ -69,21 +70,16 @@ public final class ITReactorNettyHttpClientPost {
 
         // WHEN
         client.post(body);
-        // TODO: change for something better
-        try {
-            Thread.sleep(2000);
-        } catch (final InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        Awaitility.await()
+            .until(listener::hasReceived);
 
         // THEN
         verify(postRequestedFor(urlEqualTo(ROUTE)).withRequestBody(containing(body)));
     }
 
     private final ReactorNettyHttpClient getClient(final int port) {
-        return new ReactorNettyHttpClient(LOCALHOST, port,
-            new TransactionPrinterListener(LOCALHOST, port, new PrintWriter(System.out)));
+        return new ReactorNettyHttpClient(LOCALHOST, port, listener);
     }
 
 }
