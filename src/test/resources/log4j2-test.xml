@@ -22,6 +22,14 @@
          <AppenderRef ref="file" />
       </Logger>
 
+      <!-- Netty -->
+      <Logger name="io.netty" level="error" additivity="false">
+         <AppenderRef ref="file"/>
+      </Logger>
+      <Logger name="reactor.netty.http" level="error" additivity="false">
+         <AppenderRef ref="file"/>
+      </Logger>
+
       <Root level="error">
          <AppenderRef ref="console" />
       </Root>

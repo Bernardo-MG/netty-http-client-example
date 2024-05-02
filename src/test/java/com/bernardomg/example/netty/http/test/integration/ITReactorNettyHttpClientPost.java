@@ -33,17 +33,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
+import java.io.PrintWriter;
+
 import org.junit.jupiter.api.Test;
 
+import com.bernardomg.example.netty.http.cli.TransactionPrinterListener;
 import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
-import com.bernardomg.example.netty.http.client.TransactionListener;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-import lombok.extern.slf4j.Slf4j;
-
-@WireMockTest(httpPort=8595)
-@Slf4j
+@WireMockTest(httpPort = 8595)
 public final class ITReactorNettyHttpClientPost {
 
     @Test
@@ -51,9 +50,9 @@ public final class ITReactorNettyHttpClientPost {
         final ReactorNettyHttpClient client;
 
         stubFor(post(anyUrl())
-//            .withHost(equalTo("http://localhost"))
+            // .withHost(equalTo("http://localhost"))
             .willReturn(ok("ack")));
-        
+
         client = getClient("localhost", 8595);
 
         client.setWiretap(true);
@@ -61,27 +60,12 @@ public final class ITReactorNettyHttpClientPost {
 
         client.post("abc");
 
-        verify(postRequestedFor(urlEqualTo(""))
-            .withHeader("Content-Type", equalTo("text/xml")));
+        verify(postRequestedFor(urlEqualTo("")).withHeader("Content-Type", equalTo("text/xml")));
     }
 
     private final ReactorNettyHttpClient getClient(final String url, final int port) {
-        return new ReactorNettyHttpClient(url, port, new TransactionListener() {
-
-            @Override
-            public void onReceive(final String message) {}
-
-            @Override
-            public void onSend(final String message) {
-                log.debug("Test send");
-            }
-
-            @Override
-            public void onStart() {}
-
-            @Override
-            public void onStop() {}
-        });
+        return new ReactorNettyHttpClient(url, port,
+            new TransactionPrinterListener(url, port, new PrintWriter(System.out)));
     }
 
 }
