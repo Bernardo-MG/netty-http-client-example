@@ -25,7 +25,7 @@
 package com.bernardomg.example.netty.http.test.integration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -35,6 +35,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import java.io.PrintWriter;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.bernardomg.example.netty.http.cli.TransactionPrinterListener;
@@ -43,9 +44,11 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 @WireMockTest(httpPort = 8595)
+@DisplayName("ReactorNettyHttpClient")
 public final class ITReactorNettyHttpClientPost {
 
     @Test
+    @DisplayName("Verify a post request is sent correctly")
     public final void testPost(final WireMockRuntimeInfo wmRuntimeInfo) {
         final ReactorNettyHttpClient client;
 
@@ -60,7 +63,7 @@ public final class ITReactorNettyHttpClientPost {
 
         client.post("abc");
 
-        verify(postRequestedFor(urlEqualTo("")).withHeader("Content-Type", equalTo("text/xml")));
+        verify(postRequestedFor(urlEqualTo("")).withRequestBody(containing("abc")));
     }
 
     private final ReactorNettyHttpClient getClient(final String url, final int port) {
