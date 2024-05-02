@@ -35,9 +35,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
-import reactor.netty.NettyOutbound;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.http.client.HttpClientRequest;
 import reactor.netty.http.client.HttpClientResponse;
 
 /**
@@ -48,11 +46,6 @@ import reactor.netty.http.client.HttpClientResponse;
  */
 @Slf4j
 public final class ReactorNettyHttpClient implements Client {
-
-    /**
-     * IO response handler for the client.
-     */
-    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> responseHandler;
 
     /**
      * Host for the server to which this client will connect.
@@ -73,6 +66,11 @@ public final class ReactorNettyHttpClient implements Client {
      * Port for the server to which this client will connect.
      */
     private final Integer                                                                                  port;
+
+    /**
+     * IO response handler for the client.
+     */
+    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> responseHandler;
 
     /**
      * Wiretap flag.
@@ -111,10 +109,9 @@ public final class ReactorNettyHttpClient implements Client {
 
     @Override
     public final void post(final String message) {
-        final BiFunction<? super HttpClientRequest, ? super NettyOutbound, ? extends Publisher<Void>> requestHandler;
         final Publisher<? extends ByteBuf> body;
 
-        log.debug("Posting {}", message);
+        log.debug("Sending {}", message);
 
         // Request data
         body = ByteBufFlux.fromString(Mono.just(message));
@@ -122,11 +119,9 @@ public final class ReactorNettyHttpClient implements Client {
         // Sends request
         httpClient.post()
             .send(body)
-//            .send(requestHandler)
-            .response().block();
-//            .response(responseHandler)
+            .response(responseHandler)
             // Subscribe to run
-//            .subscribe();
+            .subscribe();
     }
 
 }

@@ -69,6 +69,13 @@ public final class ITReactorNettyHttpClientPost {
 
         // WHEN
         client.post(body);
+        // TODO: change for something better
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         // THEN
         verify(postRequestedFor(urlEqualTo(ROUTE)).withRequestBody(containing(body)));
