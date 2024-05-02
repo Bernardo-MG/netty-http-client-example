@@ -79,7 +79,7 @@ public final class ITReactorNettyHttpClientPost {
     }
 
     private final ReactorNettyHttpClient getClient(final int port) {
-        return new ReactorNettyHttpClient(LOCALHOST, port, listener);
+        return new ReactorNettyHttpClient(LOCALHOST, port, listener, false);
     }
 
 }

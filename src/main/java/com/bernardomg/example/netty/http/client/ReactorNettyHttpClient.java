@@ -30,8 +30,6 @@ import java.util.function.BiFunction;
 import org.reactivestreams.Publisher;
 
 import io.netty.buffer.ByteBuf;
-import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
@@ -75,16 +73,16 @@ public final class ReactorNettyHttpClient implements Client {
     /**
      * Wiretap flag.
      */
-    @Setter
-    @NonNull
-    private Boolean                                                                                        wiretap = false;
+    private final boolean                                                                                  wiretap;
 
-    public ReactorNettyHttpClient(final String hst, final Integer prt, final TransactionListener lst) {
+    public ReactorNettyHttpClient(final String hst, final Integer prt, final TransactionListener lst,
+            final boolean wtap) {
         super();
 
         port = Objects.requireNonNull(prt);
         host = Objects.requireNonNull(hst);
         listener = Objects.requireNonNull(lst);
+        wiretap = Objects.requireNonNull(wtap);
 
         responseHandler = new ResponseToListenerHandler(listener);
     }

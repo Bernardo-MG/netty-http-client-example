@@ -122,8 +122,7 @@ public final class PostEmptyMessageCommand implements Runnable {
 
         // Create client
         listener = new TransactionPrinterListener(host, port, writer);
-        client = new ReactorNettyHttpClient(host, port, listener);
-        client.setWiretap(debug);
+        client = new ReactorNettyHttpClient(host, port, listener, debug);
 
         client.connect();
 
