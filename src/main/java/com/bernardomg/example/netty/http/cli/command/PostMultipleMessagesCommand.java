@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import com.bernardomg.example.netty.http.cli.CliWriterTransactionListener;
+import com.bernardomg.example.netty.http.cli.TransactionPrinterListener;
 import com.bernardomg.example.netty.http.cli.version.ManifestVersionProvider;
 import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
 import com.bernardomg.example.netty.http.client.TransactionListener;
@@ -121,7 +121,7 @@ public final class PostMultipleMessagesCommand implements Runnable {
         }
 
         // Create client
-        listener = new CliWriterTransactionListener(host, port, writer);
+        listener = new TransactionPrinterListener(host, port, writer);
         client = new ReactorNettyHttpClient(host, port, listener);
         client.setWiretap(debug);
 
