@@ -30,8 +30,6 @@ import java.util.function.BiFunction;
 import org.reactivestreams.Publisher;
 
 import io.netty.buffer.ByteBuf;
-import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufFlux;
@@ -46,11 +44,6 @@ import reactor.netty.http.client.HttpClientResponse;
  */
 @Slf4j
 public final class ReactorNettyHttpClient implements Client {
-
-    /**
-     * IO handler for the client.
-     */
-    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> handler;
 
     /**
      * Host for the server to which this client will connect.
@@ -73,20 +66,25 @@ public final class ReactorNettyHttpClient implements Client {
     private final Integer                                                                                  port;
 
     /**
+     * IO response handler for the client.
+     */
+    private final BiFunction<? super HttpClientResponse, ? super ByteBufFlux, ? extends Publisher<String>> responseHandler;
+
+    /**
      * Wiretap flag.
      */
-    @Setter
-    @NonNull
-    private Boolean                                                                                        wiretap = false;
+    private final boolean                                                                                  wiretap;
 
-    public ReactorNettyHttpClient(final String hst, final Integer prt, final TransactionListener lst) {
+    public ReactorNettyHttpClient(final String hst, final Integer prt, final TransactionListener lst,
+            final boolean wtap) {
         super();
 
         port = Objects.requireNonNull(prt);
         host = Objects.requireNonNull(hst);
         listener = Objects.requireNonNull(lst);
+        wiretap = Objects.requireNonNull(wtap);
 
-        handler = new ResponseToListenerHandler(listener);
+        responseHandler = new ResponseToListenerHandler(listener);
     }
 
     @Override
@@ -119,7 +117,7 @@ public final class ReactorNettyHttpClient implements Client {
         // Sends request
         httpClient.post()
             .send(body)
-            .response(handler)
+            .response(responseHandler)
             // Subscribe to run
             .subscribe();
     }

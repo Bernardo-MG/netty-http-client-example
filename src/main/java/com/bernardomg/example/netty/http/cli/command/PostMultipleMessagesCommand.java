@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import com.bernardomg.example.netty.http.cli.CliWriterTransactionListener;
+import com.bernardomg.example.netty.http.cli.TransactionPrinterListener;
 import com.bernardomg.example.netty.http.cli.version.ManifestVersionProvider;
 import com.bernardomg.example.netty.http.client.ReactorNettyHttpClient;
 import com.bernardomg.example.netty.http.client.TransactionListener;
@@ -59,7 +59,7 @@ public final class PostMultipleMessagesCommand implements Runnable {
      * Debug flag. Shows debug logs.
      */
     @Option(names = { "--debug" }, paramLabel = "flag", description = "Enable debug logs.", defaultValue = "false")
-    private Boolean     debug;
+    private boolean     debug;
 
     /**
      * Server host.
@@ -84,7 +84,7 @@ public final class PostMultipleMessagesCommand implements Runnable {
      */
     @Option(names = { "--verbose" }, paramLabel = "flag", description = "Print information to console.",
             defaultValue = "true", showDefaultValue = Help.Visibility.ALWAYS)
-    private Boolean     verbose;
+    private boolean     verbose;
 
     /**
      * Response wait time. This is the number of seconds to wait for responses.
@@ -121,9 +121,8 @@ public final class PostMultipleMessagesCommand implements Runnable {
         }
 
         // Create client
-        listener = new CliWriterTransactionListener(host, port, writer);
-        client = new ReactorNettyHttpClient(host, port, listener);
-        client.setWiretap(debug);
+        listener = new TransactionPrinterListener(host, port, writer);
+        client = new ReactorNettyHttpClient(host, port, listener, debug);
 
         client.connect();
 
